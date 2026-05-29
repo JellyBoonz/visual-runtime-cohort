@@ -19,7 +19,7 @@
       disablePerformanceAntipatternChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/petros/Documents/06-teaching/graphics-engine-mentoring/code/engine/host/macos"
+      customWorkingDirectory = "/Users/jaidenortiz/projects/CohortGraphicsProject/visual-runtime-cohort/host/macos"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
