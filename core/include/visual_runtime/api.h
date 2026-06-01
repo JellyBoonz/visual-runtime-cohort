@@ -24,7 +24,7 @@ struct SurfaceDescriptor {
   uint32_t height;
 };
 
-constexpr uint32_t VISUAL_RUNTIME_API_VERSION = 4;
+constexpr uint32_t VISUAL_RUNTIME_API_VERSION = 5;
 
 struct VisualRuntimeAPI {
   uint32_t abi_version;
@@ -35,6 +35,9 @@ struct VisualRuntimeAPI {
   void (*resize)(VisualRuntimeState *, uint32_t, uint32_t);
   void (*update)(VisualRuntimeState *, float);
   void (*shutdown)(VisualRuntimeState *);
+
+  void (*pan)(VisualRuntimeState *, float dx, float dy);
+  void (*zoom)(VisualRuntimeState *, float delta);
 };
 
 extern "C" {

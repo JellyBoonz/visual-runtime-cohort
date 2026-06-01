@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace {
 
@@ -38,6 +39,8 @@ void print_error(const char *context, NS::Error *error) {
 struct RendererBackend {
   bool init(SurfaceDescriptor *surface);
   void resize(uint32_t width, uint32_t height);
+  void pan(float dx, float dy);
+  void zoom(float delta);
   void render_frame(float t);
   void shutdown();
 
@@ -46,6 +49,9 @@ private:
   bool build_geometry();
   bool build_uniforms();
   void update_frame_uniforms();
+
+  // Camera Matrix
+  glm::mat4x4 camera_transform_ = glm::mat4x4(1.0f);
 
   CA::MetalLayer *layer_ = nullptr;
   MTL::Device *device_ = nullptr;
@@ -74,6 +80,18 @@ bool Renderer::init(SurfaceDescriptor *surface) {
 void Renderer::resize(uint32_t width, uint32_t height) {
   if (backend_) {
     backend_->resize(width, height);
+  }
+}
+
+void Renderer::pan(float dx, float dy) {
+  if (backend_) {
+    backend_->pan(dx, dy);
+  }
+}
+
+void Renderer::zoom(float delta) {
+  if (backend_) {
+    backend_->zoom(delta);
   }
 }
 
@@ -140,6 +158,20 @@ void RendererBackend::resize(uint32_t width, uint32_t height) {
 
   render_width_ = width;
   render_height_ = height;
+  update_frame_uniforms();
+}
+
+void RendererBackend::pan(float dx, float dy) {
+  float ndx = (dx / render_width_) * 2.0f;
+  float ndy = (dy / render_height_) * 2.0f;
+  camera_transform_ = glm::translate(camera_transform_, glm::vec3(ndx, -ndy, 0.0));
+  update_frame_uniforms();
+}
+
+void RendererBackend::zoom(float delta) {
+  float factor = 1.0f + delta * 0.02f;
+  if (factor <= 0.0f) return;
+  camera_transform_ = glm::scale(camera_transform_, glm::vec3(factor, factor, 1.0f));
   update_frame_uniforms();
 }
 
@@ -297,6 +329,17 @@ void RendererBackend::update_frame_uniforms() {
       uniforms.matrix[1][1] = aspect;
     }
   }
+  const auto& m = camera_transform_;
+  std::printf("camera: [%.2f %.2f %.2f %.2f]\n"
+              "        [%.2f %.2f %.2f %.2f]\n"
+              "        [%.2f %.2f %.2f %.2f]\n"
+              "        [%.2f %.2f %.2f %.2f]\n",
+      m[0][0], m[1][0], m[2][0], m[3][0],
+      m[0][1], m[1][1], m[2][1], m[3][1],
+      m[0][2], m[1][2], m[2][2], m[3][2],
+      m[0][3], m[1][3], m[2][3], m[3][3]);
+
+  uniforms.matrix = uniforms.matrix * camera_transform_;
 
   auto *contents =
       static_cast<FrameUniforms *>(frame_uniform_buffer_->contents());

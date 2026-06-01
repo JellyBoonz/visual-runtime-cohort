@@ -31,6 +31,14 @@ static void visual_runtime_shutdown_impl(VisualRuntimeState *) {
   g_renderer.shutdown();
 }
 
+static void visual_runtime_pan_impl(VisualRuntimeState *, float dx, float dy) {
+  g_renderer.pan(dx, dy);
+}
+
+static void visual_runtime_zoom_impl(VisualRuntimeState *, float delta) {
+  g_renderer.zoom(delta);
+}
+
 extern "C" {
 
 const VisualRuntimeAPI *visual_runtime_get_api() {
@@ -39,6 +47,8 @@ const VisualRuntimeAPI *visual_runtime_get_api() {
       VISUAL_RUNTIME_BACKEND_NAME,  visual_runtime_init_impl,
       visual_runtime_resize_impl,   visual_runtime_update_impl,
       visual_runtime_shutdown_impl,
+      visual_runtime_pan_impl,
+      visual_runtime_zoom_impl,
   };
   return &api;
 }

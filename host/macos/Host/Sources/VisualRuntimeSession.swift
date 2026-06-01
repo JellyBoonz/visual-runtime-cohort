@@ -26,6 +26,14 @@ public final class VisualRuntimeSession {
     func resize(width: UInt32, height: UInt32) {
         host.resize(width, height)
     }
+    
+    func pan(dx: Float, dy: Float) {
+        host.pan(dx, dy)
+    }
+    
+    func zoom(delta: Float) {
+        host.zoom(delta)
+    }
 
     func tick(_ dt: Float) {
         host.tick(dt)

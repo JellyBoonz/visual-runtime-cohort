@@ -19,6 +19,8 @@ struct Renderer {
   void resize(uint32_t width, uint32_t height);
   void render_frame(float t);
   void shutdown();
+  void pan(float dx, float dy);
+  void zoom(float delta);
 
 private:
   std::unique_ptr<RendererBackend> backend_;

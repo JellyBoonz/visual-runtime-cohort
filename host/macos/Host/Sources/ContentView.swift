@@ -58,9 +58,9 @@ private final class WindowDraggingNSView: NSView {
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
-    override func mouseDown(with event: NSEvent) {
-        window?.performDrag(with: event)
-    }
+//    override func mouseDown(with event: NSEvent) {
+//        window?.performDrag(with: event)
+//    }
 
     override func keyDown(with event: NSEvent) {
         switch event.charactersIgnoringModifiers {
@@ -71,5 +71,13 @@ private final class WindowDraggingNSView: NSView {
         default:
             super.keyDown(with: event)
         }
+    }
+    
+    override func mouseDragged(with event:NSEvent) {
+        session.pan(dx: Float(event.deltaX), dy: Float(event.deltaY))
+    }
+    
+    override func scrollWheel(with event:NSEvent) {
+        session.zoom(delta: Float(event.deltaY))
     }
 }

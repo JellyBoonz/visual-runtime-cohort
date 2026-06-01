@@ -50,6 +50,20 @@ void VisualRuntimeHost::resize(uint32_t width, uint32_t height) {
   module_->resize(width, height);
 }
 
+void VisualRuntimeHost::pan(float dx, float dy) {
+   if (!module_)
+       return;
+    
+    module_->pan(dx, dy);
+}
+
+void VisualRuntimeHost::zoom(float delta) {
+    if (!module_)
+        return;
+    
+    module_->zoom(delta);
+}
+
 void VisualRuntimeHost::tick(float dt) {
   if (!module_)
     return;

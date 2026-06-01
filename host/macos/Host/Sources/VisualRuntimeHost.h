@@ -15,18 +15,20 @@ struct VisualRuntimeModuleDeleter {
 
 class VisualRuntimeHost {
 public:
-  explicit VisualRuntimeHost(std::string lib_path);
-  VisualRuntimeHost(const VisualRuntimeHost &) = delete;
-  VisualRuntimeHost &operator=(const VisualRuntimeHost &) = delete;
-  VisualRuntimeHost(VisualRuntimeHost &&) noexcept = default;
-  VisualRuntimeHost &operator=(VisualRuntimeHost &&) noexcept = default;
+    explicit VisualRuntimeHost(std::string lib_path);
+    VisualRuntimeHost(const VisualRuntimeHost &) = delete;
+    VisualRuntimeHost &operator=(const VisualRuntimeHost &) = delete;
+    VisualRuntimeHost(VisualRuntimeHost &&) noexcept = default;
+    VisualRuntimeHost &operator=(VisualRuntimeHost &&) noexcept = default;
 
-  bool valid() const;
-  void attachSurface(void *native_surface, uint32_t width, uint32_t height);
-  void resize(uint32_t width, uint32_t height);
-  void tick(float dt);
-  bool reload();
-  std::string backendName() const;
+    bool valid() const;
+    void attachSurface(void *native_surface, uint32_t width, uint32_t height);
+    void resize(uint32_t width, uint32_t height);
+    void pan(float dx, float dy);
+    void zoom(float delta);
+    void tick(float dt);
+    bool reload();
+    std::string backendName() const;
 
 private:
   std::unique_ptr<VisualRuntimeModule, VisualRuntimeModuleDeleter> module_;
