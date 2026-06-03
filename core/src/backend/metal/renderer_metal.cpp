@@ -39,6 +39,7 @@ void print_error(const char *context, NS::Error *error) {
 struct RendererBackend {
   bool init(SurfaceDescriptor *surface);
   void resize(uint32_t width, uint32_t height);
+  void setBackgroundColor(BackgroundColor *color);
   void pan(float dx, float dy);
   void zoom(float delta);
   void render_frame(float t);
@@ -52,6 +53,11 @@ private:
 
   // Camera Matrix
   glm::mat4x4 camera_transform_ = glm::mat4x4(1.0f);
+
+  // Background Color
+  float bg_r_ = 0.0f;
+  float bg_g_ = 0.0f;
+  float bg_b_ = 0.0f;
 
   CA::MetalLayer *layer_ = nullptr;
   MTL::Device *device_ = nullptr;
@@ -80,6 +86,12 @@ bool Renderer::init(SurfaceDescriptor *surface) {
 void Renderer::resize(uint32_t width, uint32_t height) {
   if (backend_) {
     backend_->resize(width, height);
+  }
+}
+
+void Renderer::setBackgroundColor(BackgroundColor *color) {
+  if (backend_) {
+    backend_->setBackgroundColor(color);
   }
 }
 
@@ -161,6 +173,12 @@ void RendererBackend::resize(uint32_t width, uint32_t height) {
   update_frame_uniforms();
 }
 
+void RendererBackend::setBackgroundColor(BackgroundColor *color) {
+  bg_r_ = color->r;
+  bg_g_ = color->g;
+  bg_b_ = color->b;
+}
+
 void RendererBackend::pan(float dx, float dy) {
   float ndx = (dx / render_width_) * 2.0f;
   float ndy = (dy / render_height_) * 2.0f;
@@ -196,7 +214,7 @@ void RendererBackend::render_frame(float t) {
   color->setTexture(drawable->texture());
   color->setLoadAction(MTL::LoadActionClear);
   color->setStoreAction(MTL::StoreActionStore);
-  color->setClearColor(MTL::ClearColor(0, 0, 0, 1.0));
+  color->setClearColor(MTL::ClearColor(bg_b_, bg_g_, bg_r_, 1.0));
 
   auto *cmd = queue_->commandBuffer();
   auto *enc = cmd->renderCommandEncoder(pass);

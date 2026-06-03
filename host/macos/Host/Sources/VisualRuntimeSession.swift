@@ -1,7 +1,15 @@
 import QuartzCore
+import SwiftUI
 
+@Observable
 public final class VisualRuntimeSession {
-    private var host: VisualRuntimeHost
+    var backgroundColor: Color = .black {
+        didSet {
+            let resolved = backgroundColor.resolve(in: EnvironmentValues())
+            host.setBackgroundColor(resolved.red, resolved.green, resolved.blue)
+        }
+    }
+    @ObservationIgnored private var host: VisualRuntimeHost
     public var backendName: String {
         String(host.backendName())
     }
@@ -25,6 +33,10 @@ public final class VisualRuntimeSession {
 
     func resize(width: UInt32, height: UInt32) {
         host.resize(width, height)
+    }
+    
+    func setBackgroundColor(r: Float, g: Float, b: Float) {
+        host.setBackgroundColor(r, g, b)
     }
     
     func pan(dx: Float, dy: Float) {

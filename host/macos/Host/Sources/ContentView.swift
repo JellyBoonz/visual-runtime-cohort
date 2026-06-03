@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 public struct ContentView: View {
-    let session: VisualRuntimeSession
+    @State var session: VisualRuntimeSession
 
     public init(session: VisualRuntimeSession) {
         self.session = session
@@ -15,14 +15,16 @@ public struct ContentView: View {
             WindowDragView(session: session)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("q to close, r to reload")
-                Text("backend: \(session.backendName)")
-            }
+                 Text("q to close, r to reload")
+                     .allowsHitTesting(false)
+                 Text("backend: \(session.backendName)")
+                     .allowsHitTesting(false)
+                 ColorPicker("Background", selection: $session.backgroundColor)
+             }
             .font(.body.monospaced().weight(.medium))
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.8), radius: 2, x: 0, y: 1)
             .padding(12)
-            .allowsHitTesting(false)
         }
         .frame(minWidth: 800, minHeight: 600)
     }

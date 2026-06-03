@@ -31,6 +31,10 @@ static void visual_runtime_shutdown_impl(VisualRuntimeState *) {
   g_renderer.shutdown();
 }
 
+static void visual_runtime_set_background_color_impl(VisualRuntimeState *state, BackgroundColor *color) {
+  g_renderer.setBackgroundColor(color);
+}
+
 static void visual_runtime_pan_impl(VisualRuntimeState *, float dx, float dy) {
   g_renderer.pan(dx, dy);
 }
@@ -47,6 +51,7 @@ const VisualRuntimeAPI *visual_runtime_get_api() {
       VISUAL_RUNTIME_BACKEND_NAME,  visual_runtime_init_impl,
       visual_runtime_resize_impl,   visual_runtime_update_impl,
       visual_runtime_shutdown_impl,
+      visual_runtime_set_background_color_impl,
       visual_runtime_pan_impl,
       visual_runtime_zoom_impl,
   };

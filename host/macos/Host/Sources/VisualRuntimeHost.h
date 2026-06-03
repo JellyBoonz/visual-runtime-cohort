@@ -24,6 +24,7 @@ public:
     bool valid() const;
     void attachSurface(void *native_surface, uint32_t width, uint32_t height);
     void resize(uint32_t width, uint32_t height);
+    void setBackgroundColor(float r, float g, float b);
     void pan(float dx, float dy);
     void zoom(float delta);
     void tick(float dt);

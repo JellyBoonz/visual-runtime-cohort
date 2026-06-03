@@ -36,6 +36,13 @@ struct VisualRuntimeModule {
           api_.resize(&state_, width, height);
     }
 
+    void setBackgroundColor(float r, float g, float b) {
+        if (initialized_ && api_.setBackgroundColor) {
+            BackgroundColor color{r, g, b};
+            api_.setBackgroundColor(&state_, &color);
+        }
+    }
+
     void pan(float dx, float dy) {
         if (initialized_ && api_.pan)
             api_.pan(&state_, dx, dy);

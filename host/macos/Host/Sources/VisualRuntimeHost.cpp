@@ -50,6 +50,13 @@ void VisualRuntimeHost::resize(uint32_t width, uint32_t height) {
   module_->resize(width, height);
 }
 
+void VisualRuntimeHost::setBackgroundColor(float r, float g, float b) {
+    if (!module_)
+        return;
+    
+    module_->setBackgroundColor(r, g, b);
+}
+
 void VisualRuntimeHost::pan(float dx, float dy) {
    if (!module_)
        return;
