@@ -46,6 +46,10 @@ public final class VisualRuntimeSession {
     func zoom(delta: Float) {
         host.zoom(delta)
     }
+    
+    func addRectangle() {
+        host.addRectangle();
+    }
 
     func tick(_ dt: Float) {
         host.tick(dt)

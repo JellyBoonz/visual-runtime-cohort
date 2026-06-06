@@ -42,6 +42,7 @@ struct RendererBackend {
   void setBackgroundColor(BackgroundColor *color);
   void pan(float dx, float dy);
   void zoom(float delta);
+  bool update_geometry();
   void render_frame(float t);
   void shutdown();
 
@@ -58,6 +59,8 @@ private:
   float bg_r_ = 0.0f;
   float bg_g_ = 0.0f;
   float bg_b_ = 0.0f;
+
+  std::vector<Vertex> geometry_;
 
   CA::MetalLayer *layer_ = nullptr;
   MTL::Device *device_ = nullptr;
@@ -104,6 +107,12 @@ void Renderer::pan(float dx, float dy) {
 void Renderer::zoom(float delta) {
   if (backend_) {
     backend_->zoom(delta);
+  }
+}
+
+void Renderer::addRectangle() {
+  if (backend_) {
+    backend_->update_geometry();
   }
 }
 
@@ -194,8 +203,7 @@ void RendererBackend::zoom(float delta) {
 }
 
 void RendererBackend::render_frame(float t) {
-  if (!layer_ || !queue_ || !pipeline_ || !vertex_buffer_ ||
-      !frame_uniform_buffer_)
+  if (!layer_ || !queue_ || !pipeline_ || !frame_uniform_buffer_)
     return;
 
   (void)t;
@@ -227,10 +235,14 @@ void RendererBackend::render_frame(float t) {
       1.0,
   });
   enc->setRenderPipelineState(pipeline_);
-  enc->setVertexBuffer(vertex_buffer_, 0, 0);
-  enc->setVertexBuffer(frame_uniform_buffer_, 0, 1);
-  enc->drawPrimitives(MTL::PrimitiveTypeTriangle, NS::UInteger(0),
-                      vertex_count_);
+
+  if (!geometry_.empty()) {
+    enc->setVertexBuffer(vertex_buffer_, 0, 0);
+    enc->setVertexBuffer(frame_uniform_buffer_, 0, 1);
+    enc->drawPrimitives(MTL::PrimitiveTypeTriangle, NS::UInteger(0),
+                        vertex_count_);
+  }
+
   enc->endEncoding();
   cmd->presentDrawable(drawable);
   cmd->commit();
@@ -300,20 +312,38 @@ bool RendererBackend::build_pipeline() {
   return true;
 }
 
-bool RendererBackend::build_geometry() {
-  static constexpr Vertex vertices[] = {
-      {{0.0f, 0.65f}, {1.0f, 0.0f, 0.0f}},
+bool RendererBackend::update_geometry() {
+  geometry_.insert(geometry_.end(), {
+      {{-0.7f,  0.55f}, {0.0f, 1.0f, 0.0f}},
       {{-0.7f, -0.55f}, {0.0f, 1.0f, 0.0f}},
-      {{0.7f, -0.55f}, {0.0f, 0.0f, 1.0f}},
-  };
+      {{ 0.7f, -0.55f}, {0.0f, 1.0f, 0.0f}},
+      {{-0.7f,  0.55f}, {0.0f, 1.0f, 0.0f}},
+      {{ 0.7f, -0.55f}, {0.0f, 1.0f, 0.0f}},
+      {{ 0.7f,  0.55f}, {0.0f, 1.0f, 0.0f}},
+  });
 
-  vertex_count_ = sizeof(vertices) / sizeof(vertices[0]);
-  vertex_buffer_ = device_->newBuffer(vertices, sizeof(vertices),
-                                      MTL::ResourceStorageModeShared);
-  if (!vertex_buffer_) {
-    std::fprintf(stderr, "[renderer] failed to create vertex buffer\n");
-    return false;
+  if (vertex_buffer_) {
+    vertex_buffer_->release();
+    vertex_buffer_ = nullptr;
   }
+  vertex_buffer_ = device_->newBuffer(geometry_.data(), geometry_.size() * sizeof(Vertex), MTL::ResourceStorageModeShared);
+  vertex_count_ = geometry_.size();
+
+  return true;
+}
+
+bool RendererBackend::build_geometry() {
+  vertex_count_ = geometry_.size();
+
+  if (!geometry_.empty()) {
+    vertex_buffer_ = device_->newBuffer(geometry_.data(), geometry_.size() * sizeof(Vertex),
+                                        MTL::ResourceStorageModeShared);
+  }
+
+  // if (!vertex_buffer_) {
+  //   std::fprintf(stderr, "[renderer] failed to create vertex buffer\n");
+  //   return false;
+  // }
 
   return true;
 }

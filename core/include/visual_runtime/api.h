@@ -44,6 +44,7 @@ struct VisualRuntimeAPI {
 
   void (*pan)(VisualRuntimeState *, float dx, float dy);
   void (*zoom)(VisualRuntimeState *, float delta);
+  void (*addRectangle)();
 };
 
 extern "C" {

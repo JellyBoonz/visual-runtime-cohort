@@ -43,6 +43,10 @@ static void visual_runtime_zoom_impl(VisualRuntimeState *, float delta) {
   g_renderer.zoom(delta);
 }
 
+static void visual_runtime_add_rectangle_impl() {
+  g_renderer.addRectangle();
+}
+
 extern "C" {
 
 const VisualRuntimeAPI *visual_runtime_get_api() {
@@ -54,6 +58,7 @@ const VisualRuntimeAPI *visual_runtime_get_api() {
       visual_runtime_set_background_color_impl,
       visual_runtime_pan_impl,
       visual_runtime_zoom_impl,
+      visual_runtime_add_rectangle_impl,
   };
   return &api;
 }

@@ -52,6 +52,11 @@ struct VisualRuntimeModule {
         if (initialized_ && api_.zoom)
             api_.zoom(&state_, delta);
     }
+    
+    void addRectangle() {
+        if (initialized_ && api_.addRectangle)
+            api_.addRectangle();
+    }
 
     bool reloadIfChanged() {
         if (!lib_.changed())

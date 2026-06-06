@@ -22,6 +22,7 @@ struct Renderer {
   void setBackgroundColor(BackgroundColor* color);
   void pan(float dx, float dy);
   void zoom(float delta);
+  void addRectangle();
 
 private:
   std::unique_ptr<RendererBackend> backend_;

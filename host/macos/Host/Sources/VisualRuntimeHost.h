@@ -27,6 +27,7 @@ public:
     void setBackgroundColor(float r, float g, float b);
     void pan(float dx, float dy);
     void zoom(float delta);
+    void addRectangle();
     void tick(float dt);
     bool reload();
     std::string backendName() const;

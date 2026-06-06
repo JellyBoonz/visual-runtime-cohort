@@ -71,6 +71,13 @@ void VisualRuntimeHost::zoom(float delta) {
     module_->zoom(delta);
 }
 
+void VisualRuntimeHost::addRectangle() {
+    if (!module_)
+        return;
+    
+    module_->addRectangle();
+}
+
 void VisualRuntimeHost::tick(float dt) {
   if (!module_)
     return;

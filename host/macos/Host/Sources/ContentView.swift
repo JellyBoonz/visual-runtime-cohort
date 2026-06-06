@@ -15,11 +15,14 @@ public struct ContentView: View {
             WindowDragView(session: session)
 
             VStack(alignment: .leading, spacing: 4) {
-                 Text("q to close, r to reload")
-                     .allowsHitTesting(false)
-                 Text("backend: \(session.backendName)")
-                     .allowsHitTesting(false)
-                 ColorPicker("Background", selection: $session.backgroundColor)
+                Text("q to close, r to reload")
+                 .allowsHitTesting(false)
+                Text("backend: \(session.backendName)")
+                 .allowsHitTesting(false)
+                ColorPicker("Background", selection: $session.backgroundColor)
+                Button("Add Rectangle"){
+                    session.addRectangle()
+                }
              }
             .font(.body.monospaced().weight(.medium))
             .foregroundStyle(.white)
